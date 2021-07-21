@@ -10,6 +10,9 @@ public class MetronomoController : MonoBehaviour
     [Header("Beat Interval")]
     public double Interval; //The interval between the ticks
 
+    [Header("Beat SubInterval")]
+    public double SubInterval; 
+
     [Header("Set the Tempo")]
     public double BPM = 120; //The number set in the inspector to set the desired Tempo
 
@@ -32,6 +35,7 @@ public class MetronomoController : MonoBehaviour
     {
         //We set ticks to divide the Tempo by 60(which represents a minute, to get the number between the beats). We do this in the awake function so this information is set before the first frame of the game.
         Interval = 60.0f / BPM;
+        SubInterval = Interval/2;
         
     }
 
@@ -42,7 +46,8 @@ public class MetronomoController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(secondRoutine());
+        StartCoroutine(tickRoutine());
+        StartCoroutine(semiTickRoutine());
         
     }
 
@@ -52,7 +57,7 @@ public class MetronomoController : MonoBehaviour
         /*
         if (Input.GetKeyDown(KeyCode.F1))
         {
-            StartCoroutine(secondRoutine()); //Starting our coroutine by pressing spacebar
+            StartCoroutine(tickRoutine()); //Starting our coroutine by pressing spacebar
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -61,7 +66,7 @@ public class MetronomoController : MonoBehaviour
     }
 
 
-    IEnumerator secondRoutine()
+    IEnumerator tickRoutine()
     {
         //While the time is less than 1000( You can use any number for this, but it seems to multiply it by 2 what ever you pick) this is the amount of time the metronome runs for
         while (Time.time < setTheTime) //decided to use a while statement because it seemed like the bst option for a continuingly playing beat
@@ -71,16 +76,36 @@ public class MetronomoController : MonoBehaviour
             {
                 MetroSound[0].Play();
                 //Cube.GetComponent<Renderer>().material.color = Color.HSVToRGB(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
-                Debug.Log("Up Beat");
+                //Debug.Log("Up Beat");
             }
+            
+            
             else
             {
                 MetroSound[1].Play();
                 //Cube.GetComponent<Renderer>().material.color = Color.HSVToRGB(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
-                Debug.Log("Down Beat");
+                //Debug.Log("Down Beat");
             }
+
+            
+
+
             yield return new WaitForSecondsRealtime((float)Interval); // Because I decided to use doubles for the ticks and BPM to be more acurate with time, we have to explicitly imply it as a float for the WaitForSecondsRealtime method to recognose it.
         }
     }
+
+
+     IEnumerator semiTickRoutine()
+    {
+        //While the time is less than 1000( You can use any number for this, but it seems to multiply it by 2 what ever you pick) this is the amount of time the metronome runs for
+        while (Time.time < setTheTime) //decided to use a while statement because it seemed like the bst option for a continuingly playing beat
+        {
+
+            MetroSound[2].Play();
+
+            yield return new WaitForSecondsRealtime((float)SubInterval); // Because I decided to use doubles for the ticks and BPM to be more acurate with time, we have to explicitly imply it as a float for the WaitForSecondsRealtime method to recognose it.
+        }
+    }
+    
 
 }

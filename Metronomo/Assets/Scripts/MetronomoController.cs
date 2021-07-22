@@ -67,6 +67,12 @@ public class MetronomoController : MonoBehaviour
         }
     }
 
+    public void HandlenputField(string text)
+    {
+        
+        BPM = int.Parse(text);
+    }
+
 
 
 

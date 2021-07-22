@@ -16,8 +16,6 @@ public class MetronomoController : MonoBehaviour
     [Header("is subInterval?")]
     public bool isSubInterval; 
 
-    private bool lastIsSubInterval;
-
     private IEnumerator IEtickRoutine;
     private IEnumerator IEsemiTickRoutine;
     
@@ -36,7 +34,9 @@ public class MetronomoController : MonoBehaviour
     //public GameObject Cube; //Place the game object you wish to change colour here
 
     [Header("This will change the number of beats in the bar. For Example ~ 4/4 , 5/4 , 6/4")]
-    public int NumberOfBeatsInBar = 4;
+    public int NumberOfBeatsInBar = 2;
+
+    private int[] metricas = {2,3,4,5,6,7};
 
 
 
@@ -47,6 +47,24 @@ public class MetronomoController : MonoBehaviour
         Interval = 60.0f / BPM;
         SubInterval = Interval/2;
         
+    }
+
+    public void HandleDropDownInput(int val)
+    {
+        NumberOfBeatsInBar = metricas[val];
+        //Debug.Log(metricas[val]);
+    }
+
+    public void HandleToggleInput()
+    {
+        if (isSubInterval)
+        {
+            isSubInterval = false;
+        }
+        else
+        {
+            isSubInterval = true;
+        }
     }
 
 
@@ -96,6 +114,7 @@ public class MetronomoController : MonoBehaviour
         //While the time is less than 1000( You can use any number for this, but it seems to multiply it by 2 what ever you pick) this is the amount of time the metronome runs for
         while (Time.time < setTheTime) //decided to use a while statement because it seemed like the bst option for a continuingly playing beat
         {
+            
             Counter++;
             if (Counter % NumberOfBeatsInBar == 1)             //on the first beat I want to play a different sound, then repeat that pattern every 4 beats 1(Accent), 2, 3, 4, 1(Accent), 2, 3, 4.... etc.  In this case I have used a modulas operator. 
             {
@@ -114,7 +133,7 @@ public class MetronomoController : MonoBehaviour
 
             
 
-
+            Interval = 60.0f / BPM;
             yield return new WaitForSecondsRealtime((float)Interval); // Because I decided to use doubles for the ticks and BPM to be more acurate with time, we have to explicitly imply it as a float for the WaitForSecondsRealtime method to recognose it.
         }
     }
@@ -125,6 +144,7 @@ public class MetronomoController : MonoBehaviour
         //While the time is less than 1000( You can use any number for this, but it seems to multiply it by 2 what ever you pick) this is the amount of time the metronome runs for
         while (Time.time < setTheTime) //decided to use a while statement because it seemed like the bst option for a continuingly playing beat
         {
+            
             if (isSubInterval)
             {
                 MetroSound[2].volume = 1;
@@ -138,7 +158,7 @@ public class MetronomoController : MonoBehaviour
 
             }
             
-
+            SubInterval = Interval/2;
             yield return new WaitForSecondsRealtime((float)SubInterval); // Because I decided to use doubles for the ticks and BPM to be more acurate with time, we have to explicitly imply it as a float for the WaitForSecondsRealtime method to recognose it.
         }
     }

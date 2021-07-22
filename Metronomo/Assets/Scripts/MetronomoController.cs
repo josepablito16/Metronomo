@@ -56,12 +56,17 @@ public class MetronomoController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartTickRoutines(false);
-        
-        
+        //StartTickRoutines(false);
+
+        IEtickRoutine = tickRoutine();
+        StartCoroutine(IEtickRoutine);
+
+        IEsemiTickRoutine = semiTickRoutine();
+        StartCoroutine(IEsemiTickRoutine);
+ 
     }
 
-    void StartTickRoutines(bool sub)
+    void StopTickRoutines(bool sub)
     {
         try
         {
@@ -76,52 +81,12 @@ public class MetronomoController : MonoBehaviour
         }
         catch
         {}
-            
-        
-        
-
-        IEtickRoutine = tickRoutine();
-        StartCoroutine(IEtickRoutine);
-
-        if(sub)
-        {
-            IEsemiTickRoutine = semiTickRoutine();
-            StartCoroutine(IEsemiTickRoutine);
-
-        }
-        
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isSubInterval)
-        {
-            if (isSubInterval != lastIsSubInterval)
-            {
-                StartTickRoutines(true);
-                lastIsSubInterval = isSubInterval;
-            } 
-        }
-        else
-        {
-            if (isSubInterval != lastIsSubInterval)
-            {
-                StartTickRoutines(false);
-                lastIsSubInterval = isSubInterval;
-            }
-
-        }
-        
-        /*
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            StartCoroutine(tickRoutine()); //Starting our coroutine by pressing spacebar
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        */
+                
         
     }
 
@@ -160,8 +125,19 @@ public class MetronomoController : MonoBehaviour
         //While the time is less than 1000( You can use any number for this, but it seems to multiply it by 2 what ever you pick) this is the amount of time the metronome runs for
         while (Time.time < setTheTime) //decided to use a while statement because it seemed like the bst option for a continuingly playing beat
         {
+            if (isSubInterval)
+            {
+                MetroSound[2].volume = 1;
+                MetroSound[2].Play();
+            }
+            else
+            {
+                // Se agrega de esta forma para que no pierda el tiempo
+                MetroSound[2].volume = 0;
+                MetroSound[2].Play();
 
-            MetroSound[2].Play();
+            }
+            
 
             yield return new WaitForSecondsRealtime((float)SubInterval); // Because I decided to use doubles for the ticks and BPM to be more acurate with time, we have to explicitly imply it as a float for the WaitForSecondsRealtime method to recognose it.
         }

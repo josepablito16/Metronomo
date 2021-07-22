@@ -13,6 +13,16 @@ public class MetronomoController : MonoBehaviour
     [Header("Beat SubInterval")]
     public double SubInterval; 
 
+    [Header("is subInterval?")]
+    public bool isSubInterval; 
+
+    private bool lastIsSubInterval;
+
+    private IEnumerator IEtickRoutine;
+    private IEnumerator IEsemiTickRoutine;
+    
+
+
     [Header("Set the Tempo")]
     public double BPM = 120; //The number set in the inspector to set the desired Tempo
 
@@ -46,14 +56,64 @@ public class MetronomoController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(tickRoutine());
-        StartCoroutine(semiTickRoutine());
+        StartTickRoutines(false);
         
+        
+    }
+
+    void StartTickRoutines(bool sub)
+    {
+        try
+        {
+            StopCoroutine(IEtickRoutine);
+        }
+        catch
+        {}
+
+        try
+        {
+            StopCoroutine(IEsemiTickRoutine);
+        }
+        catch
+        {}
+            
+        
+        
+
+        IEtickRoutine = tickRoutine();
+        StartCoroutine(IEtickRoutine);
+
+        if(sub)
+        {
+            IEsemiTickRoutine = semiTickRoutine();
+            StartCoroutine(IEsemiTickRoutine);
+
+        }
+        
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (isSubInterval)
+        {
+            if (isSubInterval != lastIsSubInterval)
+            {
+                StartTickRoutines(true);
+                lastIsSubInterval = isSubInterval;
+            } 
+        }
+        else
+        {
+            if (isSubInterval != lastIsSubInterval)
+            {
+                StartTickRoutines(false);
+                lastIsSubInterval = isSubInterval;
+            }
+
+        }
+        
         /*
         if (Input.GetKeyDown(KeyCode.F1))
         {

@@ -418,6 +418,8 @@ MonoBehaviour:
   - {fileID: 355952627}
   - {fileID: 478696793}
   Interval: 0
+  SubInterval: 0
+  isSubInterval: 0
   BPM: 120
   Counter: 0
   setTheTime: 1000

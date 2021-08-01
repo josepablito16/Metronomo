@@ -38,6 +38,8 @@ public class MetronomoController : MonoBehaviour
 
     private int[] metricas = {2,3,4,5,6,7};
 
+    private int contadorControl = 0;
+
 
 
 
@@ -84,9 +86,6 @@ public class MetronomoController : MonoBehaviour
 
         IEtickRoutine = tickRoutine();
         StartCoroutine(IEtickRoutine);
-
-        IEsemiTickRoutine = semiTickRoutine();
-        StartCoroutine(IEsemiTickRoutine);
  
     }
 
@@ -99,12 +98,6 @@ public class MetronomoController : MonoBehaviour
         catch
         {}
 
-        try
-        {
-            StopCoroutine(IEsemiTickRoutine);
-        }
-        catch
-        {}
     }
 
     // Update is called once per frame
@@ -120,37 +113,8 @@ public class MetronomoController : MonoBehaviour
         //While the time is less than 1000( You can use any number for this, but it seems to multiply it by 2 what ever you pick) this is the amount of time the metronome runs for
         while (Time.time < setTheTime) //decided to use a while statement because it seemed like the bst option for a continuingly playing beat
         {
-            
-            Counter++;
-            if (Counter % NumberOfBeatsInBar == 1)             //on the first beat I want to play a different sound, then repeat that pattern every 4 beats 1(Accent), 2, 3, 4, 1(Accent), 2, 3, 4.... etc.  In this case I have used a modulas operator. 
-            {
-                MetroSound[0].Play();
-                //Cube.GetComponent<Renderer>().material.color = Color.HSVToRGB(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
-                //Debug.Log("Up Beat");
-            }
-            
-            
-            else
-            {
-                MetroSound[1].Play();
-                //Cube.GetComponent<Renderer>().material.color = Color.HSVToRGB(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
-                //Debug.Log("Down Beat");
-            }
 
-            
-
-            Interval = 60.0f / BPM;
-            yield return new WaitForSecondsRealtime((float)Interval); // Because I decided to use doubles for the ticks and BPM to be more acurate with time, we have to explicitly imply it as a float for the WaitForSecondsRealtime method to recognose it.
-        }
-    }
-
-
-     IEnumerator semiTickRoutine()
-    {
-        //While the time is less than 1000( You can use any number for this, but it seems to multiply it by 2 what ever you pick) this is the amount of time the metronome runs for
-        while (Time.time < setTheTime) //decided to use a while statement because it seemed like the bst option for a continuingly playing beat
-        {
-            
+            // Subintervalo
             if (isSubInterval)
             {
                 MetroSound[2].volume = 1;
@@ -163,11 +127,39 @@ public class MetronomoController : MonoBehaviour
                 MetroSound[2].Play();
 
             }
+
+
+            //Intervalo normal
+            contadorControl++;
+            if (contadorControl % 2 == 0)
+            {
+                Counter++;
+                if (Counter % NumberOfBeatsInBar == 1)             //on the first beat I want to play a different sound, then repeat that pattern every 4 beats 1(Accent), 2, 3, 4, 1(Accent), 2, 3, 4.... etc.  In this case I have used a modulas operator. 
+                {
+                    MetroSound[0].Play();
+                    //Cube.GetComponent<Renderer>().material.color = Color.HSVToRGB(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+                    //Debug.Log("Up Beat");
+                }
+                
+                
+                else
+                {
+                    MetroSound[1].Play();
+                    //Cube.GetComponent<Renderer>().material.color = Color.HSVToRGB(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f));
+                    //Debug.Log("Down Beat");
+                }
+                
+            }
             
+
+            
+
+            Interval = 60.0f / BPM;
             SubInterval = Interval/2;
             yield return new WaitForSecondsRealtime((float)SubInterval); // Because I decided to use doubles for the ticks and BPM to be more acurate with time, we have to explicitly imply it as a float for the WaitForSecondsRealtime method to recognose it.
         }
     }
+
     
 
 }

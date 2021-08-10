@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+
 
 public class GeneradorDeRitmo : MonoBehaviour
 {
@@ -47,10 +49,61 @@ public class GeneradorDeRitmo : MonoBehaviour
 
     }
 
+    int getSum(List<int> claveFinal)
+    {
+        int suma = 0;
+        if (claveFinal.Count == 0)
+            return 0;
+
+        return claveFinal.Aggregate((x, y) => x + y);
+
+
+    }
+
     void getGrupoClave(int limite)
     {
+        int[] posible = {2,3};
+        //posibleSubdivision[Random.Range(0,posibleSubdivision.Length)];
+
+        Debug.Log("--- Generar clave ---");
+        Debug.Log("limite = "+limite);
+
+        bool condicionSalida = false;
+
+        List<int> claveFinal = new List<int>();
         
-        Debug.Log("GenerarClave Random limite = "+limite);
+        
+
+
+
+        while (true)
+        {
+
+            while (getSum(claveFinal) <= limite)
+            {
+                if (getSum(claveFinal) == limite)
+                {
+                    condicionSalida = true;
+                    break;
+                }
+                else
+                {
+                    claveFinal.Add(posible[Random.Range(0,posible.Length)]);
+                }
+            }
+
+            if (condicionSalida)
+            {
+                break;
+            }
+            else{
+                claveFinal.Clear();  
+            }
+
+        }
+
+        Debug.Log("Clave final = "+string.Join(", ", claveFinal));
+
     }
 
     void crearClave(int cantidadSubdivision, int subdivisionBase)

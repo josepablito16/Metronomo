@@ -60,7 +60,7 @@ public class GeneradorDeRitmo : MonoBehaviour
 
     }
 
-    void getGrupoClave(int limite)
+    List<int> getGrupoClave(int limite)
     {
         int[] posible = {2,3};
         //posibleSubdivision[Random.Range(0,posibleSubdivision.Length)];
@@ -102,8 +102,23 @@ public class GeneradorDeRitmo : MonoBehaviour
 
         }
 
-        Debug.Log("Clave final = "+string.Join(", ", claveFinal));
 
+        return claveFinal;
+
+    }
+
+    int[] crearRelleno(List<int> clave, int dimension)
+    {
+        int[] relleno = new int[dimension];
+        
+        int contador = -1;
+        foreach (int i in clave)
+        {
+            contador+=i;
+            relleno[contador] = 1;
+        }
+        
+        return relleno;
     }
 
     void crearClave(int cantidadSubdivision, int subdivisionBase)
@@ -118,9 +133,12 @@ public class GeneradorDeRitmo : MonoBehaviour
 
         Debug.Log("Subdivision Clave es 1/"+ subdivisionClave);
 
-        getGrupoClave(subdivisionRandom * cantidadSubdivision);
+        List<int> claveFinal = getGrupoClave(subdivisionRandom * cantidadSubdivision);
+        Debug.Log("Clave final = "+string.Join(", ", claveFinal));
 
 
+        int[] relleno = crearRelleno(claveFinal,subdivisionRandom * cantidadSubdivision);
+        Debug.Log("Relleno final = "+string.Join(", ", relleno));
 
 
     }

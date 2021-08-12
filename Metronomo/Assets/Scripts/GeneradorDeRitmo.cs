@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 
 
+
 public class GeneradorDeRitmo : MonoBehaviour
 {   
     [Header("Samples")]
@@ -25,16 +26,19 @@ public class GeneradorDeRitmo : MonoBehaviour
 
     private IEnumerator IEtickRoutine;
 
+    private List<int> rellenoFinal = new List<int>();
+
+    private int rellenoDim = 0;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        generarRitmo();
         Interval = 60.0f / BPM;
         SubInterval = Interval/2;
         IEtickRoutine = tickRoutine();
         StartCoroutine(IEtickRoutine);
-
-        generarRitmo();
 
     }
 
@@ -45,7 +49,7 @@ public class GeneradorDeRitmo : MonoBehaviour
         {
 
             // Subintervalo
-            MetroSound[2].volume = 1;
+            MetroSound[2].volume = Random.Range(0.7f, 1f);
             MetroSound[2].Play();
 
 
@@ -54,15 +58,17 @@ public class GeneradorDeRitmo : MonoBehaviour
             contadorControl++;
             if (contadorControl % 2 == 0)
             {
-                Counter++;
-                if (Counter % NumberOfBeatsInBar == 1)             //on the first beat I want to play a different sound, then repeat that pattern every 4 beats 1(Accent), 2, 3, 4, 1(Accent), 2, 3, 4.... etc.  In this case I have used a modulas operator. 
+                if (rellenoFinal[Counter % rellenoDim] == 0)             //on the first beat I want to play a different sound, then repeat that pattern every 4 beats 1(Accent), 2, 3, 4, 1(Accent), 2, 3, 4.... etc.  In this case I have used a modulas operator. 
                 {
+                    // Suena clave
                     MetroSound[0].Play();
                 }
-                else
+                else if (rellenoFinal[Counter % rellenoDim] == 1)
                 {
+                    // suena relleno
                     MetroSound[1].Play();
                 }
+                Counter++;
 
             }
 
@@ -99,6 +105,9 @@ public class GeneradorDeRitmo : MonoBehaviour
 
 
         int cantidadSubdivision = cantidadSubdivisionArray[Random.Range(0,cantidadSubdivisionArray.Length)];
+
+        NumberOfBeatsInBar = cantidadSubdivision;
+
         int subdivisionBase =subdivisionBaseArray[Random.Range(0,subdivisionBaseArray.Length)];
 
         Debug.Log("cantidad de subdivisiones " +cantidadSubdivision);
@@ -166,9 +175,14 @@ public class GeneradorDeRitmo : MonoBehaviour
 
     }
 
-    int[] crearRelleno(List<int> clave, int dimension)
+    List<int> crearRelleno(List<int> clave, int dimension)
     {
-        int[] relleno = new int[dimension];
+        List<int> relleno = new List<int>();
+
+        for (int i = 0; i < dimension; i++)
+        {
+            relleno.Add(0);
+        }
         
         int contador = -1;
         foreach (int i in clave)
@@ -180,23 +194,7 @@ public class GeneradorDeRitmo : MonoBehaviour
         return relleno;
     }
 
-    int[] getClaveArray(int[] relleno)
-    {
-        int[] claveArray = new int[relleno.Length];
 
-        int contador = 0;
-        foreach (int i in relleno)
-        {
-            if(i==0)
-                claveArray[contador] = 1;
-            else
-                claveArray[contador] = 0;
-            
-            contador += 1;
-        }
-
-        return claveArray;
-    }
 
     void crearClave(int cantidadSubdivision, int subdivisionBase)
     {
@@ -214,10 +212,10 @@ public class GeneradorDeRitmo : MonoBehaviour
         Debug.Log("Clave final = "+string.Join(", ", claveFinal));
 
 
-        int[] relleno = crearRelleno(claveFinal,subdivisionRandom * cantidadSubdivision);
-        Debug.Log("Relleno final = "+string.Join(", ", relleno));
+        rellenoFinal = crearRelleno(claveFinal,subdivisionRandom * cantidadSubdivision);
+        rellenoDim = rellenoFinal.Count;
+        Debug.Log("Relleno final = "+string.Join(", ", rellenoFinal));
 
-        int[] claveArray = getClaveArray(relleno);
-        Debug.Log("Clave array = "+string.Join(", ", claveArray));
+
     }
 }

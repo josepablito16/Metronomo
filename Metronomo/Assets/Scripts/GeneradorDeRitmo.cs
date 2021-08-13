@@ -2,13 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 
 
 public class GeneradorDeRitmo : MonoBehaviour
 {   
-    [Header("Samples")]
-    public AudioSource[] MetroSound;
+    [Header("HitHat")]
+    public AudioSource[] HitHat;
+
+    [Header("Kick")]
+    public AudioSource[] Kick;
+
+    [Header("Snare")]
+    public AudioSource[] Snare;
 
     private double Interval; //The interval between the ticks
 
@@ -29,6 +36,7 @@ public class GeneradorDeRitmo : MonoBehaviour
     private List<int> rellenoFinal = new List<int>();
 
     private int rellenoDim = 0;
+    
 
 
     // Start is called before the first frame update
@@ -42,6 +50,12 @@ public class GeneradorDeRitmo : MonoBehaviour
 
     }
 
+    public void HandlenputField(string text)
+    {
+        
+        BPM = int.Parse(text);
+    }
+
     IEnumerator tickRoutine()
     {
         //While the time is less than 1000( You can use any number for this, but it seems to multiply it by 2 what ever you pick) this is the amount of time the metronome runs for
@@ -49,8 +63,9 @@ public class GeneradorDeRitmo : MonoBehaviour
         {
 
             // Subintervalo
-            MetroSound[2].volume = Random.Range(0.7f, 1f);
-            MetroSound[2].Play();
+            int HitHatIndex = Random.Range(0,HitHat.Length);
+            HitHat[HitHatIndex].volume = 1;
+            HitHat[HitHatIndex].Play();
 
 
 
@@ -61,12 +76,17 @@ public class GeneradorDeRitmo : MonoBehaviour
                 if (rellenoFinal[Counter % rellenoDim] == 0)             //on the first beat I want to play a different sound, then repeat that pattern every 4 beats 1(Accent), 2, 3, 4, 1(Accent), 2, 3, 4.... etc.  In this case I have used a modulas operator. 
                 {
                     // Suena clave
-                    MetroSound[0].Play();
+                    Kick[0].Play();
                 }
                 else if (rellenoFinal[Counter % rellenoDim] == 1)
                 {
                     // suena relleno
-                    MetroSound[1].Play();
+                    if (Counter % rellenoDim == rellenoDim - 1)
+                        Snare[0].Play();
+                    else
+                        Snare[1].Play();
+
+                    
                 }
                 Counter++;
 
@@ -85,8 +105,9 @@ public class GeneradorDeRitmo : MonoBehaviour
     }
 
 
-    void generarRitmo(int seed = 0)
+    public void generarRitmo(int seed = 0)
     {
+        Counter = 0;
         if (seed != 0)
         {
             Random.seed = seed;
@@ -110,8 +131,8 @@ public class GeneradorDeRitmo : MonoBehaviour
 
         int subdivisionBase =subdivisionBaseArray[Random.Range(0,subdivisionBaseArray.Length)];
 
-        Debug.Log("cantidad de subdivisiones " +cantidadSubdivision);
-        Debug.Log("subdivision base " +subdivisionBase);
+        //Debug.Log("cantidad de subdivisiones " +cantidadSubdivision);
+        //Debug.Log("subdivision base " +subdivisionBase);
 
         crearClave(cantidadSubdivision, subdivisionBase);
 
@@ -133,8 +154,8 @@ public class GeneradorDeRitmo : MonoBehaviour
         int[] posible = {2,3};
         //posibleSubdivision[Random.Range(0,posibleSubdivision.Length)];
 
-        Debug.Log("--- Generar clave ---");
-        Debug.Log("limite = "+limite);
+        //Debug.Log("--- Generar clave ---");
+        //Debug.Log("limite = "+limite);
 
         bool condicionSalida = false;
 
@@ -206,15 +227,18 @@ public class GeneradorDeRitmo : MonoBehaviour
 
 
 
-        Debug.Log("Subdivision Clave es 1/"+ subdivisionClave);
+        //Debug.Log("Subdivision Clave es 1/"+ subdivisionClave);
 
         List<int> claveFinal = getGrupoClave(subdivisionRandom * cantidadSubdivision);
-        Debug.Log("Clave final = "+string.Join(", ", claveFinal));
+        //Debug.Log("Clave final = "+string.Join(", ", claveFinal));
 
 
         rellenoFinal = crearRelleno(claveFinal,subdivisionRandom * cantidadSubdivision);
         rellenoDim = rellenoFinal.Count;
-        Debug.Log("Relleno final = "+string.Join(", ", rellenoFinal));
+        //Debug.Log("Relleno final = "+string.Join(", ", rellenoFinal));
+
+        Text info = GameObject.Find("Info").GetComponent<Text>();
+        info.text = string.Format("Metrica: {0}/4  \nClave: [{1}]  \nRelleno: [{2}]",cantidadSubdivision,string.Join(", ", claveFinal),string.Join(", ", rellenoFinal));
 
 
     }

@@ -8,12 +8,22 @@ public class Piano : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        int cantSubdivisiones;
+
+
         // 8 compases de 3/4
-        //List<float> resultado = getRitmoArmonico(24,3);
+        //cantSubdivisiones = 3;
+        //List<float> resultado = getRitmoArmonico(24,cantSubdivisiones);
 
         // 8 compases de 4/4
-        List<float> resultado = getRitmoArmonico(32,4);
+        cantSubdivisiones = 4;
+        List<float> resultado = getRitmoArmonico(32,cantSubdivisiones);
+
+
         Debug.Log("Clave final = "+string.Join(", ", resultado));
+
+        calcularFuncionesTonales(resultado, cantSubdivisiones);
+        
     }
 
     // Update is called once per frame
@@ -59,7 +69,7 @@ public class Piano : MonoBehaviour
             2f * cantSubdivisiones,   //blanca
             1f * cantSubdivisiones,   //negra
             0.5f * cantSubdivisiones,   //corchea
-            0.25f * cantSubdivisiones    //semicorchea
+            //0.25f * cantSubdivisiones    //semicorchea
         };
 
         bool condicionSalida = false;
@@ -92,4 +102,79 @@ public class Piano : MonoBehaviour
         }
         return ritmoArmonicoFinal;
     }
+
+    List<UnidadPiano> agregarUnidades(int cantidad, tipoTonal funcionTonal, List<UnidadPiano> funciones)
+    {
+        /*
+        Funcion para agregar <cantidad> elementos de tipo <UnidadPiano> con funcion
+        tonal <funcionTonal>.
+
+        Parametros:
+        - cantidad: cantidad de elementos a agregar a la lista
+        - funcionTonal: funcion tonal de los elementos a agregar
+        - funciones: lista donde se quiere agregar los elementos
+
+        Retorno:
+        - lista con los elementos agregados
+        */
+
+        for (int i = 0; i < cantidad; i++)
+        {
+            UnidadPiano temp = new UnidadPiano(funcionTonal);
+            funciones.Add(temp);
+        }
+
+        return funciones;
+
+    }
+    void calcularFuncionesTonales(List<float> ritmoArmonico, int cantSubdivisiones)
+    {
+        float unidadMinima =  0.25f * cantSubdivisiones;
+        float residuo = 0;
+        Debug.Log("unidad Minima = "+ unidadMinima);
+        List<UnidadPiano> funciones = new List<UnidadPiano>();
+
+        foreach (float item in ritmoArmonico)
+        {
+            if (item % 2 == 0)
+            {
+                float mitad = item / 2;
+
+                // agregarUnidades mitad, Fuerte
+                funciones = agregarUnidades((int) mitad, tipoTonal.fuerte, funciones);
+
+                // agregarUnidades mitad, Debil
+                funciones = agregarUnidades((int) mitad, tipoTonal.debil, funciones);
+            }
+            else if (item == 3f)
+            {
+                funciones = agregarUnidades(1, tipoTonal.fuerte, funciones);
+                funciones = agregarUnidades(2, tipoTonal.debil, funciones);
+            }
+            else if (item == 1.5f)
+            {
+                funciones = agregarUnidades(1, tipoTonal.fuerte, funciones);
+
+                if (residuo == 0.5f)
+                {
+                    funciones = agregarUnidades(1, tipoTonal.debil, funciones);
+                    residuo = 0;
+                }
+                else
+                {
+                    residuo = 0.5f;
+                }
+
+            }
+        }
+
+        for (int i = 0; i < funciones.Count; i++)
+        {
+            Debug.Log(i + " " +funciones[i].funcionTonal);
+
+        }
+
+
+    }
 }
+

@@ -22,9 +22,10 @@ public class UnidadPiano : MonoBehaviour
     public tipoGrado grado;
     public int nota;
 
-    public UnidadPiano(tipoTonal tipoTonalParam)
+    public UnidadPiano(tipoTonal tipoTonalParam, tipoGrado tipoGradoParam)
     {
         funcionTonal = tipoTonalParam;
+        grado = tipoGradoParam;
     }
 
 

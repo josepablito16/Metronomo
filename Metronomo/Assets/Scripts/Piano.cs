@@ -103,7 +103,7 @@ public class Piano : MonoBehaviour
         return ritmoArmonicoFinal;
     }
 
-    List<UnidadPiano> agregarUnidades(int cantidad, tipoTonal funcionTonal, List<UnidadPiano> funciones)
+    List<UnidadPiano> agregarUnidades(int cantidad, tipoTonal funcionTonal, List<UnidadPiano> funciones, bool esPrimero, bool esUltimo)
     {
         /*
         Funcion para agregar <cantidad> elementos de tipo <UnidadPiano> con funcion
@@ -113,51 +113,113 @@ public class Piano : MonoBehaviour
         - cantidad: cantidad de elementos a agregar a la lista
         - funcionTonal: funcion tonal de los elementos a agregar
         - funciones: lista donde se quiere agregar los elementos
+        - esPrimero: verdadero si es la primera unidad
+        - esUltimo: verdadero si es la ultima unidad
 
         Retorno:
         - lista con los elementos agregados
         */
 
+        tipoGrado grado = getTipoGrado(funcionTonal, esPrimero, esUltimo);
+
         for (int i = 0; i < cantidad; i++)
         {
-            UnidadPiano temp = new UnidadPiano(funcionTonal);
+            UnidadPiano temp = new UnidadPiano(funcionTonal, grado);
             funciones.Add(temp);
         }
 
         return funciones;
 
     }
+
+    tipoGrado getTipoGrado(tipoTonal funcionTonal, bool esPrimero, bool esUltimo)
+    {
+        /*
+        Funcion para obtener de forma random el tipo de grado
+
+        Parametros:
+        - funcionTonal: funcion tonal que tomaremos como base (fuerte, debil)
+        - esPrimero: sera verdadero si es el primer segmento a analizar
+        - esUltimo: sera verdadero si es el ultimo segmento a analizar
+
+        Return:
+        - tipoGrado generado random
+        */
+        List<tipoGrado> posibles = new List<tipoGrado>();
+        if(funcionTonal == tipoTonal.fuerte)
+        {
+            // si es fuerte y es el primero, simpre sera tonica
+            if(esPrimero)
+                return tipoGrado.tonica;
+
+            // se agregan las opciones a seleccionar si es fuerte y no es el primero
+            posibles.Add(tipoGrado.tonica);
+            posibles.Add(tipoGrado.subdominante);
+        }
+        else
+        {
+            // si es debil y es el ultimo, siempre sera dominante
+            if(esUltimo)
+                return tipoGrado.dominante;
+
+            // se agregan las opciones a seleccionar si es debil y no es el primero
+            posibles.Add(tipoGrado.subdominante);
+            posibles.Add(tipoGrado.dominante);
+        }
+
+        /*
+        vamos a seleccionar random con mayor probabilidad
+        de seleccionar la primera posicion de lista "posibles"
+        */
+        if (Random.Range(0f,1f) < 0.8)
+            return posibles[0];
+        else
+            return posibles[1];
+
+
+    }
     void calcularFuncionesTonales(List<float> ritmoArmonico, int cantSubdivisiones)
     {
-        float unidadMinima =  0.25f * cantSubdivisiones;
         float residuo = 0;
-        Debug.Log("unidad Minima = "+ unidadMinima);
+        float acumulado = 0;
+        int max = cantSubdivisiones * 8;
+        bool esPrimero = true;
+        bool esUltimo = false;
+
         List<UnidadPiano> funciones = new List<UnidadPiano>();
 
         foreach (float item in ritmoArmonico)
         {
+            
             if (item % 2 == 0)
             {
+                if ((acumulado + item) == max)
+                    esUltimo = true;
+
                 float mitad = item / 2;
 
                 // agregarUnidades mitad, Fuerte
-                funciones = agregarUnidades((int) mitad, tipoTonal.fuerte, funciones);
+                funciones = agregarUnidades((int) mitad, tipoTonal.fuerte, funciones, esPrimero, esUltimo);
 
                 // agregarUnidades mitad, Debil
-                funciones = agregarUnidades((int) mitad, tipoTonal.debil, funciones);
+                funciones = agregarUnidades((int) mitad, tipoTonal.debil, funciones, esPrimero, esUltimo);
             }
             else if (item == 3f)
             {
-                funciones = agregarUnidades(1, tipoTonal.fuerte, funciones);
-                funciones = agregarUnidades(2, tipoTonal.debil, funciones);
+                if ((acumulado + item) == max)
+                    esUltimo = true;
+                funciones = agregarUnidades(1, tipoTonal.fuerte, funciones, esPrimero, esUltimo);
+                funciones = agregarUnidades(2, tipoTonal.debil, funciones, esPrimero, esUltimo);
             }
             else if (item == 1.5f)
             {
-                funciones = agregarUnidades(1, tipoTonal.fuerte, funciones);
+                if ((acumulado + item) == max)
+                    esUltimo = true;
+                funciones = agregarUnidades(1, tipoTonal.fuerte, funciones, esPrimero, esUltimo);
 
                 if (residuo == 0.5f)
                 {
-                    funciones = agregarUnidades(1, tipoTonal.debil, funciones);
+                    funciones = agregarUnidades(1, tipoTonal.debil, funciones, esPrimero, esUltimo);
                     residuo = 0;
                 }
                 else
@@ -166,14 +228,20 @@ public class Piano : MonoBehaviour
                 }
 
             }
+
+            if (esPrimero)
+                esPrimero = false;
+            
+            acumulado += item;
         }
 
+        
         for (int i = 0; i < funciones.Count; i++)
         {
-            Debug.Log(i + " " +funciones[i].funcionTonal);
+            Debug.Log(i + " " +funciones[i].funcionTonal+ " - " +funciones[i].grado);
 
         }
-
+        
 
     }
 }

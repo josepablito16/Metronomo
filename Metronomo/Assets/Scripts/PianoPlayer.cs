@@ -8,27 +8,32 @@ public class PianoPlayer : MonoBehaviour
 
     float getPitch(int semitonos)
     {
-        return Mathf.Pow(2f,semitonos/12f);
+        return Mathf.Pow(2f, semitonos / 12f);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        samplesBase[0].pitch = getPitch(0);
+        //playAcorde(new List<int> { 3, 6, 12 });
+    }
+
+    void playAcorde(List<int> semitonosAcorde)
+    {
+        samplesBase[0].pitch = getPitch(semitonosAcorde[0]);
         samplesBase[0].Play();
 
-        samplesBase[1].pitch = getPitch(1);
+        samplesBase[1].pitch = getPitch(semitonosAcorde[1]);
         samplesBase[1].Play();
 
-        samplesBase[2].pitch = getPitch(2);
+        samplesBase[2].pitch = getPitch(semitonosAcorde[2]);
         samplesBase[2].Play();
-        
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
+
 }

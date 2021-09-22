@@ -20,12 +20,13 @@ public class UnidadPiano : MonoBehaviour
 
     public tipoTonal funcionTonal;
     public tipoGrado grado;
-    public int nota;
+    public List<int> acorde;
 
-    public UnidadPiano(tipoTonal tipoTonalParam, tipoGrado tipoGradoParam)
+    public UnidadPiano(tipoTonal tipoTonalParam, tipoGrado tipoGradoParam, List<int> acordeParam)
     {
         funcionTonal = tipoTonalParam;
         grado = tipoGradoParam;
+        acorde = acordeParam;
     }
 
 

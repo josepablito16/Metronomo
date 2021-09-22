@@ -22,26 +22,48 @@ public class GeneradorTonal : MonoBehaviour
         return escala;
     }
 
-    List<string> getAcorde(int notaRaiz, List<int> escala)
+    List<int> getAcorde(int notaRaiz, List<int> escala)
     {
-        return new List<string> {
-                nombreNotas[escala[notaRaiz] % 12],
-                nombreNotas[escala[notaRaiz + 2] % 12],
-                nombreNotas[escala[notaRaiz + 4] % 12]
+        return new List<int> {
+                escala[notaRaiz] % 12,
+                escala[notaRaiz + 2] % 12,
+                escala[notaRaiz + 4] % 12
             };
     }
 
 
-
-
-    // Start is called before the first frame update
-    void Start()
+    public List<int> calcularAcorde(int gradoIndex, int notaIndex)
     {
-        // Escriba el numero de grado:
-        int gradoIndex = 1;
+        /*
+        Funcion que devuelve los semitonos de diferencia para contruir un acorde respecto
+        a un grado y una nota.
 
-        // "Escriba el numero de nota: 
-        int notaIndex = 1;
+        Parametros:
+        - gradoIndex: int que representa el grado del acorde
+                        Ej:
+                        0. Primer Grado
+                        1. Segundo Grado
+                        2. Tercer Grado
+                        3. Cuarto Grado
+                        4. Quinto Grado
+                        5. Sexto Grado
+                        6. Septimo Grado
+        - notaIndex: int que representa la nota de la escala.
+                        Ej:
+                        0. Do
+                        1. DO#
+                        2. RE
+                        3. RE#
+                        4. MI
+                        5. FA
+                        6. FA#
+                        7. SOL
+                        8. SOL#
+                        9. LA
+                        10. LA#
+                        11. SI
+
+        */
 
         int maxAcordes = 8;
 
@@ -49,9 +71,16 @@ public class GeneradorTonal : MonoBehaviour
 
         List<int> escala = getEcala(notaIndex);
 
-        List<string> acorde = getAcorde(gradoIndex, escala);
+        List<int> acorde = getAcorde(gradoIndex, escala);
 
         Debug.Log("Acorde = " + string.Join(", ", acorde));
+        return acorde;
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
 
     }
 

@@ -5,10 +5,13 @@ using System.Linq;
 
 public class Piano : MonoBehaviour
 {
+    int notaIndex;
     // Start is called before the first frame update
     void Start()
     {
         int cantSubdivisiones;
+
+        notaIndex = Random.Range(0, 11);
 
 
         // 8 compases de 3/4
@@ -17,19 +20,19 @@ public class Piano : MonoBehaviour
 
         // 8 compases de 4/4
         cantSubdivisiones = 4;
-        List<float> resultado = getRitmoArmonico(32,cantSubdivisiones);
+        List<float> resultado = getRitmoArmonico(32, cantSubdivisiones);
 
 
-        Debug.Log("Clave final = "+string.Join(", ", resultado));
+        Debug.Log("Clave final = " + string.Join(", ", resultado));
 
         calcularFuncionesTonales(resultado, cantSubdivisiones);
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     int getSum(List<float> ritmoArmonico)
@@ -47,7 +50,7 @@ public class Piano : MonoBehaviour
         if (ritmoArmonico.Count == 0)
             return 0;
 
-        return (int) ritmoArmonico.Aggregate((x, y) => x + y);
+        return (int)ritmoArmonico.Aggregate((x, y) => x + y);
     }
 
     List<float> getRitmoArmonico(int limite, int cantSubdivisiones)
@@ -75,7 +78,7 @@ public class Piano : MonoBehaviour
         bool condicionSalida = false;
 
         List<float> ritmoArmonicoFinal = new List<float>();
-        
+
         while (true)
         {
 
@@ -88,7 +91,7 @@ public class Piano : MonoBehaviour
                 }
                 else
                 {
-                    ritmoArmonicoFinal.Add(posible[Random.Range(0,posible.Length)]);
+                    ritmoArmonicoFinal.Add(posible[Random.Range(0, posible.Length)]);
                 }
             }
 
@@ -96,8 +99,9 @@ public class Piano : MonoBehaviour
             {
                 break;
             }
-            else{
-                ritmoArmonicoFinal.Clear();  
+            else
+            {
+                ritmoArmonicoFinal.Clear();
             }
         }
         return ritmoArmonicoFinal;
@@ -120,11 +124,30 @@ public class Piano : MonoBehaviour
         - lista con los elementos agregados
         */
 
+        int[] posiblesTonicas = {1,3,6};
+        int[] posiblesSubDominantes = {2,4};
+        GeneradorTonal generadorTonal = new GeneradorTonal();
+
+
         tipoGrado grado = getTipoGrado(funcionTonal, esPrimero, esUltimo);
+        List<int> acorde = new List<int>();
+        if(tipoGrado.tonica == grado)
+        {
+            acorde = generadorTonal.calcularAcorde(posiblesTonicas[Random.Range(0, posiblesTonicas.Length)], notaIndex);
+        }
+        else if (tipoGrado.subdominante == grado)
+        {
+            acorde = generadorTonal.calcularAcorde(posiblesSubDominantes[Random.Range(0, posiblesSubDominantes.Length)], notaIndex);
+        }
+        else
+        {
+            // dominantes 5
+            acorde = generadorTonal.calcularAcorde(5, notaIndex);
+        }
 
         for (int i = 0; i < cantidad; i++)
         {
-            UnidadPiano temp = new UnidadPiano(funcionTonal, grado);
+            UnidadPiano temp = new UnidadPiano(funcionTonal, grado, acorde);
             funciones.Add(temp);
         }
 
@@ -146,10 +169,10 @@ public class Piano : MonoBehaviour
         - tipoGrado generado random
         */
         List<tipoGrado> posibles = new List<tipoGrado>();
-        if(funcionTonal == tipoTonal.fuerte)
+        if (funcionTonal == tipoTonal.fuerte)
         {
             // si es fuerte y es el primero, simpre sera tonica
-            if(esPrimero)
+            if (esPrimero)
                 return tipoGrado.tonica;
 
             // se agregan las opciones a seleccionar si es fuerte y no es el primero
@@ -159,7 +182,7 @@ public class Piano : MonoBehaviour
         else
         {
             // si es debil y es el ultimo, siempre sera dominante
-            if(esUltimo)
+            if (esUltimo)
                 return tipoGrado.dominante;
 
             // se agregan las opciones a seleccionar si es debil y no es el primero
@@ -171,7 +194,7 @@ public class Piano : MonoBehaviour
         vamos a seleccionar random con mayor probabilidad
         de seleccionar la primera posicion de lista "posibles"
         */
-        if (Random.Range(0f,1f) < 0.8)
+        if (Random.Range(0f, 1f) < 0.8)
             return posibles[0];
         else
             return posibles[1];
@@ -190,7 +213,7 @@ public class Piano : MonoBehaviour
 
         foreach (float item in ritmoArmonico)
         {
-            
+
             if (item % 2 == 0)
             {
                 if ((acumulado + item) == max)
@@ -199,10 +222,10 @@ public class Piano : MonoBehaviour
                 float mitad = item / 2;
 
                 // agregarUnidades mitad, Fuerte
-                funciones = agregarUnidades((int) mitad, tipoTonal.fuerte, funciones, esPrimero, esUltimo);
+                funciones = agregarUnidades((int)mitad, tipoTonal.fuerte, funciones, esPrimero, esUltimo);
 
                 // agregarUnidades mitad, Debil
-                funciones = agregarUnidades((int) mitad, tipoTonal.debil, funciones, esPrimero, esUltimo);
+                funciones = agregarUnidades((int)mitad, tipoTonal.debil, funciones, esPrimero, esUltimo);
             }
             else if (item == 3f)
             {
@@ -231,17 +254,17 @@ public class Piano : MonoBehaviour
 
             if (esPrimero)
                 esPrimero = false;
-            
+
             acumulado += item;
         }
 
-        
+
         for (int i = 0; i < funciones.Count; i++)
         {
-            Debug.Log(i + " " +funciones[i].funcionTonal+ " - " +funciones[i].grado);
+            Debug.Log(i + " " + funciones[i].funcionTonal + " - " + funciones[i].grado + " - " + string.Join(", ", funciones[i].acorde));
 
         }
-        
+
 
     }
 }

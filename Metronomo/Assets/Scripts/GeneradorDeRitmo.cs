@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 
 public class GeneradorDeRitmo : MonoBehaviour
-{   
+{
     [Header("HitHat")]
     public AudioSource[] HitHat;
 
@@ -36,7 +36,11 @@ public class GeneradorDeRitmo : MonoBehaviour
     private List<int> rellenoFinal = new List<int>();
 
     private int rellenoDim = 0;
-    
+
+    Piano miPiano = new Piano();
+
+    List<string> pianoInfo = new List<string>();
+
 
 
     // Start is called before the first frame update
@@ -44,7 +48,7 @@ public class GeneradorDeRitmo : MonoBehaviour
     {
         generarRitmo();
         Interval = 60.0f / BPM;
-        SubInterval = Interval/2;
+        SubInterval = Interval / 2;
         IEtickRoutine = tickRoutine();
         StartCoroutine(IEtickRoutine);
 
@@ -52,7 +56,7 @@ public class GeneradorDeRitmo : MonoBehaviour
 
     public void HandlenputField(string text)
     {
-        
+
         BPM = int.Parse(text);
     }
 
@@ -63,10 +67,11 @@ public class GeneradorDeRitmo : MonoBehaviour
         {
 
             // Subintervalo
-            int HitHatIndex = Random.Range(0,HitHat.Length);
+            int HitHatIndex = Random.Range(0, HitHat.Length);
             HitHat[HitHatIndex].volume = 1;
             HitHat[HitHatIndex].Play();
 
+            miPiano.PlayPiano();
 
 
             //Intervalo normal
@@ -86,14 +91,14 @@ public class GeneradorDeRitmo : MonoBehaviour
                     else
                         Snare[1].Play();
 
-                    
+
                 }
                 Counter++;
 
             }
 
             Interval = 60.0f / BPM;
-            SubInterval = Interval/2;
+            SubInterval = Interval;
             yield return new WaitForSecondsRealtime((float)SubInterval); // Because I decided to use doubles for the ticks and BPM to be more acurate with time, we have to explicitly imply it as a float for the WaitForSecondsRealtime method to recognose it.
         }
     }
@@ -101,7 +106,7 @@ public class GeneradorDeRitmo : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-                
+
     }
 
 
@@ -116,20 +121,24 @@ public class GeneradorDeRitmo : MonoBehaviour
         {
             //Debug.Log("Seed"+Random.seed);
         }
-        
+
         //ej 3/4
         //cantidad_subdivision = 3 
         //subdivision_base = 4
         // solo vamos a trabajar con 3/4 y 4/4
-        int[] cantidadSubdivisionArray = {3,4};
-        int[] subdivisionBaseArray = {4};
+        int[] cantidadSubdivisionArray = { 3, 4 };
+        int[] subdivisionBaseArray = { 4 };
 
 
-        int cantidadSubdivision = cantidadSubdivisionArray[Random.Range(0,cantidadSubdivisionArray.Length)];
+        int cantidadSubdivision = cantidadSubdivisionArray[Random.Range(0, cantidadSubdivisionArray.Length)];
+
+
+        pianoInfo = miPiano.GenerarRitmoPiano(cantidadSubdivision);
+
 
         NumberOfBeatsInBar = cantidadSubdivision;
 
-        int subdivisionBase =subdivisionBaseArray[Random.Range(0,subdivisionBaseArray.Length)];
+        int subdivisionBase = subdivisionBaseArray[Random.Range(0, subdivisionBaseArray.Length)];
 
         //Debug.Log("cantidad de subdivisiones " +cantidadSubdivision);
         //Debug.Log("subdivision base " +subdivisionBase);
@@ -151,7 +160,7 @@ public class GeneradorDeRitmo : MonoBehaviour
 
     List<int> getGrupoClave(int limite)
     {
-        int[] posible = {2,3};
+        int[] posible = { 2, 3 };
         //posibleSubdivision[Random.Range(0,posibleSubdivision.Length)];
 
         //Debug.Log("--- Generar clave ---");
@@ -160,8 +169,8 @@ public class GeneradorDeRitmo : MonoBehaviour
         bool condicionSalida = false;
 
         List<int> claveFinal = new List<int>();
-        
-        
+
+
 
 
 
@@ -177,7 +186,7 @@ public class GeneradorDeRitmo : MonoBehaviour
                 }
                 else
                 {
-                    claveFinal.Add(posible[Random.Range(0,posible.Length)]);
+                    claveFinal.Add(posible[Random.Range(0, posible.Length)]);
                 }
             }
 
@@ -185,8 +194,9 @@ public class GeneradorDeRitmo : MonoBehaviour
             {
                 break;
             }
-            else{
-                claveFinal.Clear();  
+            else
+            {
+                claveFinal.Clear();
             }
 
         }
@@ -204,14 +214,14 @@ public class GeneradorDeRitmo : MonoBehaviour
         {
             relleno.Add(0);
         }
-        
+
         int contador = -1;
         foreach (int i in clave)
         {
-            contador+=i;
+            contador += i;
             relleno[contador] = 1;
         }
-        
+
         return relleno;
     }
 
@@ -219,9 +229,9 @@ public class GeneradorDeRitmo : MonoBehaviour
 
     void crearClave(int cantidadSubdivision, int subdivisionBase)
     {
-        int[] posibleSubdivision = {1,2,4};
+        int[] posibleSubdivision = { 1, 2, 4 };
 
-        int subdivisionRandom = posibleSubdivision[Random.Range(0,posibleSubdivision.Length)];
+        int subdivisionRandom = posibleSubdivision[Random.Range(0, posibleSubdivision.Length)];
 
         int subdivisionClave = subdivisionRandom * subdivisionBase;
 
@@ -233,12 +243,12 @@ public class GeneradorDeRitmo : MonoBehaviour
         //Debug.Log("Clave final = "+string.Join(", ", claveFinal));
 
 
-        rellenoFinal = crearRelleno(claveFinal,subdivisionRandom * cantidadSubdivision);
+        rellenoFinal = crearRelleno(claveFinal, subdivisionRandom * cantidadSubdivision);
         rellenoDim = rellenoFinal.Count;
         //Debug.Log("Relleno final = "+string.Join(", ", rellenoFinal));
 
         Text info = GameObject.Find("Info").GetComponent<Text>();
-        info.text = string.Format("Metrica: {0}/4  \nClave: [{1}]  \nRelleno: [{2}]",cantidadSubdivision,string.Join(", ", claveFinal),string.Join(", ", rellenoFinal));
+        info.text = string.Format("Metrica: {0}/4  \nClave: [{1}]  \nRelleno: [{2}] \nDuración acordes: [{3}] \nNota base: {4}", cantidadSubdivision, string.Join(", ", claveFinal), string.Join(", ", rellenoFinal), pianoInfo[0], pianoInfo[1]);
 
 
     }

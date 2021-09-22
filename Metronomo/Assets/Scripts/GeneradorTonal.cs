@@ -6,8 +6,6 @@ public class GeneradorTonal : MonoBehaviour
 {
     List<int> formulaEscalaMayor = new List<int> { 2, 2, 1, 2, 2, 2, 1, 2, 2, 1, 2, 2, 2, 1 };
 
-    List<string> nombreNotas = new List<string> {"Do", "DO#", "RE", "RE#", "MI",
-                "FA", "FA#", "SOL", "SOL#", "LA", "LA#", "SI"};
 
     List<int> getEcala(int notaInicial)
     {
@@ -73,7 +71,7 @@ public class GeneradorTonal : MonoBehaviour
 
         List<int> acorde = getAcorde(gradoIndex, escala);
 
-        Debug.Log("Acorde = " + string.Join(", ", acorde));
+        //Debug.Log("Acorde = " + string.Join(", ", acorde));
         return acorde;
     }
 

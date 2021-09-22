@@ -4,21 +4,33 @@ using UnityEngine;
 
 public class PianoPlayer : MonoBehaviour
 {
-    public AudioSource[] samplesBase;
+    public List<AudioSource> samplesBase = new List<AudioSource>();
+
 
     float getPitch(int semitonos)
     {
         return Mathf.Pow(2f, semitonos / 12f);
     }
 
+    public PianoPlayer()
+    {
+        samplesBase.Add(GameObject.Find("SampleBase1").GetComponent<AudioSource>());
+        samplesBase.Add(GameObject.Find("SampleBase2").GetComponent<AudioSource>());
+        samplesBase.Add(GameObject.Find("SampleBase3").GetComponent<AudioSource>());
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         //playAcorde(new List<int> { 3, 6, 12 });
+
     }
 
-    void playAcorde(List<int> semitonosAcorde)
+    public void playAcorde(List<int> semitonosAcorde)
     {
+
+
         samplesBase[0].pitch = getPitch(semitonosAcorde[0]);
         samplesBase[0].Play();
 
@@ -27,6 +39,7 @@ public class PianoPlayer : MonoBehaviour
 
         samplesBase[2].pitch = getPitch(semitonosAcorde[2]);
         samplesBase[2].Play();
+
     }
 
 

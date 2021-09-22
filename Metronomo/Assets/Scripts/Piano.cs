@@ -2,31 +2,75 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 public class Piano : MonoBehaviour
 {
     int notaIndex;
+    List<UnidadPiano> funciones = new List<UnidadPiano>();
+    int tiempo = 0;
+
+    List<string> nombreNotas = new List<string> {"Do", "DO#", "RE", "RE#", "MI",
+                "FA", "FA#", "SOL", "SOL#", "LA", "LA#", "SI"};
+    public List<string> GenerarRitmoPiano(int cantSubdivisiones)
+    {
+        tiempo = 0;
+        notaIndex = Random.Range(0, 11);
+        List<float> resultado = new List<float>();
+        if (cantSubdivisiones == 4)
+        {
+            // 8 compases de 4/4
+            cantSubdivisiones = 4;
+            resultado = getRitmoArmonico(32, cantSubdivisiones);
+        }
+        else
+        {
+            // 8 compases de 3/4
+            cantSubdivisiones = 3;
+            resultado = getRitmoArmonico(24, cantSubdivisiones);
+        }
+
+
+
+        //Debug.Log("Duración de acordes = " + string.Join(", ", resultado));
+        Text info = GameObject.Find("Info").GetComponent<Text>();
+
+        funciones = calcularFuncionesTonales(resultado, cantSubdivisiones);
+
+        List<string> respuesta = new List<string>();
+
+        respuesta.Add(string.Join(", ", resultado));
+
+        respuesta.Add(nombreNotas[notaIndex]);
+
+        return respuesta;
+    }
+
+    public void PlayPiano()
+    {
+        PianoPlayer a = new PianoPlayer();
+        try
+        {
+            List<int> prevAcorde = funciones[(tiempo - 1) % funciones.Count].acorde;
+            List<int> acordeActual = funciones[tiempo % funciones.Count].acorde;
+            if (!prevAcorde.SequenceEqual(acordeActual))
+                a.playAcorde(funciones[tiempo % funciones.Count].acorde);
+        }
+        catch (System.Exception)
+        {
+
+            a.playAcorde(funciones[tiempo % funciones.Count].acorde);
+        }
+
+        tiempo += 1;
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
-        int cantSubdivisiones;
-
-        notaIndex = Random.Range(0, 11);
-
-
-        // 8 compases de 3/4
-        //cantSubdivisiones = 3;
-        //List<float> resultado = getRitmoArmonico(24,cantSubdivisiones);
-
-        // 8 compases de 4/4
-        cantSubdivisiones = 4;
-        List<float> resultado = getRitmoArmonico(32, cantSubdivisiones);
-
-
-        Debug.Log("Clave final = " + string.Join(", ", resultado));
-
-        calcularFuncionesTonales(resultado, cantSubdivisiones);
-
+        //GenerarRitmoPiano(4);
+        //PlayPiano();
     }
 
     // Update is called once per frame
@@ -124,14 +168,14 @@ public class Piano : MonoBehaviour
         - lista con los elementos agregados
         */
 
-        int[] posiblesTonicas = {1,3,6};
-        int[] posiblesSubDominantes = {2,4};
+        int[] posiblesTonicas = { 1, 3, 6 };
+        int[] posiblesSubDominantes = { 2, 4 };
         GeneradorTonal generadorTonal = new GeneradorTonal();
 
 
         tipoGrado grado = getTipoGrado(funcionTonal, esPrimero, esUltimo);
         List<int> acorde = new List<int>();
-        if(tipoGrado.tonica == grado)
+        if (tipoGrado.tonica == grado)
         {
             acorde = generadorTonal.calcularAcorde(posiblesTonicas[Random.Range(0, posiblesTonicas.Length)], notaIndex);
         }
@@ -201,7 +245,7 @@ public class Piano : MonoBehaviour
 
 
     }
-    void calcularFuncionesTonales(List<float> ritmoArmonico, int cantSubdivisiones)
+    List<UnidadPiano> calcularFuncionesTonales(List<float> ritmoArmonico, int cantSubdivisiones)
     {
         float residuo = 0;
         float acumulado = 0;
@@ -258,13 +302,7 @@ public class Piano : MonoBehaviour
             acumulado += item;
         }
 
-
-        for (int i = 0; i < funciones.Count; i++)
-        {
-            Debug.Log(i + " " + funciones[i].funcionTonal + " - " + funciones[i].grado + " - " + string.Join(", ", funciones[i].acorde));
-
-        }
-
+        return funciones;
 
     }
 }

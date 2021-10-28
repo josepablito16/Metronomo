@@ -42,6 +42,7 @@ public class Piano : MonoBehaviour
         respuesta.Add(string.Join(", ", resultado));
 
         respuesta.Add(nombreNotas[notaIndex]);
+        Debug.Log("respuesta = " + string.Join(", ", respuesta));
 
         return respuesta;
     }

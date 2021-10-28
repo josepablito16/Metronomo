@@ -71,7 +71,7 @@ public class GeneradorTonal : MonoBehaviour
 
         List<int> acorde = getAcorde(gradoIndex, escala);
 
-        //Debug.Log("Acorde = " + string.Join(", ", acorde));
+        Debug.Log("Acorde = " + string.Join(", ", acorde));
         return acorde;
     }
 

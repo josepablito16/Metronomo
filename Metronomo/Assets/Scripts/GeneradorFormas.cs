@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class GeneradorFormas : MonoBehaviour
 {
+    string[] letras = { "A", "B", "C", "D", "E", "F" };
     // Start is called before the first frame update
     void Start()
     {
@@ -16,8 +17,6 @@ public class GeneradorFormas : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-
     }
 
 
@@ -34,7 +33,7 @@ public class GeneradorFormas : MonoBehaviour
         return posibles[Random.Range(0, posibles.Length)];
     }
 
-    List<int> getSecciones(int cantidadCompases)
+    List<string> getSecciones(int cantidadCompases)
     {
         /*
         Minimo 2
@@ -42,29 +41,33 @@ public class GeneradorFormas : MonoBehaviour
         los extremos de este rango seran poco probable
         */
         int cantidadSecciones = cantidadCompases / 8;
-        List<int> secciones = new List<int>();
+        List<string> secciones = new List<string>();
 
         if (cantidadSecciones == 2)
         {
-            secciones.Add(1);
-            secciones.Add(2);
+            secciones.Add(letras[0]);
+            secciones.Add(letras[1]);
         }
         else
         {
             int idSeccion = 0;
-            secciones.Add(idSeccion++);
+            secciones.Add(letras[idSeccion++]);
 
             for (int i = 1; i < cantidadSecciones; i++)
             {
-                int random = Random.Range(0, 5);
+                int random = Random.Range(0, 15);
 
-                if (random > 1)
+                if (random == 0)
                 {
-                    secciones.Add(idSeccion++);
+                    secciones.Add(secciones[secciones.Count - 1]);
+                }
+                else if (random > 1 && random < 10)
+                {
+                    secciones.Add(letras[idSeccion++]);
                 }
                 else
                 {
-                    secciones.Add(secciones[secciones.Count - 1]);
+                    secciones.Add(letras[Random.Range(0, idSeccion + 1)]);
                 }
 
             }

@@ -8,15 +8,22 @@ public class GeneradorFormas : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int cantidadCompases = getCantidadCompases();
-        Debug.Log(cantidadCompases);
-        getSecciones(cantidadCompases);
+        List<string> secciones = new List<string>();
+        secciones = generarSecciones();
+        Debug.Log(string.Join(", ", secciones));
 
     }
 
     // Update is called once per frame
     void Update()
     {
+    }
+
+    public List<string> generarSecciones()
+    {
+        int cantidadCompases = getCantidadCompases();
+        //Debug.Log(cantidadCompases);
+        return getSecciones(cantidadCompases);
     }
 
 
@@ -47,6 +54,7 @@ public class GeneradorFormas : MonoBehaviour
         {
             secciones.Add(letras[0]);
             secciones.Add(letras[1]);
+
         }
         else
         {
@@ -73,8 +81,8 @@ public class GeneradorFormas : MonoBehaviour
             }
 
         }
-        Debug.Log("Secciones = " + cantidadCompases / 8);
-        Debug.Log(string.Join(", ", secciones));
+        //Debug.Log("Secciones = " + cantidadCompases / 8);
+
         return secciones;
     }
 

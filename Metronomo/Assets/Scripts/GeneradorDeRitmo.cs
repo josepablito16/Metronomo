@@ -33,7 +33,7 @@ public class GeneradorDeRitmo : MonoBehaviour
 
     private IEnumerator IEtickRoutine;
 
-    private List<int> rellenoFinal = new List<int>();
+    private List<int> rellenoFormas = new List<int>();
 
     private int rellenoDim = 0;
 
@@ -78,12 +78,12 @@ public class GeneradorDeRitmo : MonoBehaviour
             contadorControl++;
             if (contadorControl % 2 == 0)
             {
-                if (rellenoFinal[Counter % rellenoDim] == 0)             //on the first beat I want to play a different sound, then repeat that pattern every 4 beats 1(Accent), 2, 3, 4, 1(Accent), 2, 3, 4.... etc.  In this case I have used a modulas operator. 
+                if (rellenoFormas[Counter % rellenoDim] == 0)             //on the first beat I want to play a different sound, then repeat that pattern every 4 beats 1(Accent), 2, 3, 4, 1(Accent), 2, 3, 4.... etc.  In this case I have used a modulas operator. 
                 {
                     // Suena clave
                     Kick[0].Play();
                 }
-                else if (rellenoFinal[Counter % rellenoDim] == 1)
+                else if (rellenoFormas[Counter % rellenoDim] == 1)
                 {
                     // suena relleno
                     if (Counter % rellenoDim == rellenoDim - 1)
@@ -143,7 +143,8 @@ public class GeneradorDeRitmo : MonoBehaviour
         //Debug.Log("cantidad de subdivisiones " +cantidadSubdivision);
         //Debug.Log("subdivision base " +subdivisionBase);
 
-        crearClave(cantidadSubdivision, subdivisionBase);
+        rellenoFormas = crearClave(cantidadSubdivision, subdivisionBase);
+        rellenoDim = rellenoFormas.Count;
 
     }
 
@@ -227,8 +228,9 @@ public class GeneradorDeRitmo : MonoBehaviour
 
 
 
-    void crearClave(int cantidadSubdivision, int subdivisionBase)
+    List<int> crearClave(int cantidadSubdivision, int subdivisionBase)
     {
+        List<int> rellenoFinal = new List<int>();
         int[] posibleSubdivision = { 1, 2, 4 };
 
         int subdivisionRandom = posibleSubdivision[Random.Range(0, posibleSubdivision.Length)];
@@ -244,12 +246,12 @@ public class GeneradorDeRitmo : MonoBehaviour
 
 
         rellenoFinal = crearRelleno(claveFinal, subdivisionRandom * cantidadSubdivision);
-        rellenoDim = rellenoFinal.Count;
+
         //Debug.Log("Relleno final = "+string.Join(", ", rellenoFinal));
 
         Text info = GameObject.Find("Info").GetComponent<Text>();
-        info.text = string.Format("Metrica: {0}/4  \nClave: [{1}]  \nRelleno: [{2}] \nDuración acordes: [{3}] \nNota base: {4}", cantidadSubdivision, string.Join(", ", claveFinal), string.Join(", ", rellenoFinal), pianoInfo[0], pianoInfo[1]);
-
+        info.text = string.Format("Metrica: {0}/4\nNota base: {1}", cantidadSubdivision, pianoInfo[1]);
+        return rellenoFinal;
 
     }
 }

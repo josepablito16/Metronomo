@@ -293,7 +293,21 @@ public class GeneradorDeRitmo : MonoBehaviour
 
         rellenoFinal = crearRelleno(claveFinal, subdivisionRandom * cantidadSubdivision);
 
-        //Debug.Log("Relleno final = "+string.Join(", ", rellenoFinal));
+        /*
+            Se crea una bateria simple
+        */
+        if (Random.Range(0, 3) == 0)
+        {
+            for (int i = 0; i < rellenoFinal.Count; i++)
+            {
+                if (rellenoFinal[i] == 1)
+                {
+                    rellenoFinal[i] = 5;
+                }
+            }
+        }
+
+        Debug.Log("Relleno final = " + string.Join(", ", rellenoFinal));
 
 
         return rellenoFinal;

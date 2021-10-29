@@ -8,14 +8,15 @@ public class Piano : MonoBehaviour
 {
     int notaIndex;
     List<UnidadPiano> funciones = new List<UnidadPiano>();
+    List<UnidadPiano> seccionTemp = new List<UnidadPiano>();
     int tiempo = 0;
 
     List<string> nombreNotas = new List<string> {"Do", "DO#", "RE", "RE#", "MI",
                 "FA", "FA#", "SOL", "SOL#", "LA", "LA#", "SI"};
-    public List<string> GenerarRitmoPiano(int cantSubdivisiones)
+    public List<string> GenerarRitmoPiano(int cantSubdivisiones, int notaBase)
     {
         tiempo = 0;
-        notaIndex = Random.Range(0, 11);
+        notaIndex = notaBase;
         List<float> resultado = new List<float>();
         if (cantSubdivisiones == 4)
         {
@@ -35,16 +36,37 @@ public class Piano : MonoBehaviour
         //Debug.Log("Duración de acordes = " + string.Join(", ", resultado));
         Text info = GameObject.Find("Info").GetComponent<Text>();
 
-        funciones = calcularFuncionesTonales(resultado, cantSubdivisiones);
 
         List<string> respuesta = new List<string>();
 
         respuesta.Add(string.Join(", ", resultado));
 
         respuesta.Add(nombreNotas[notaIndex]);
+        seccionTemp = calcularFuncionesTonales(resultado, cantSubdivisiones);
+
         Debug.Log("respuesta = " + string.Join(", ", respuesta));
 
         return respuesta;
+    }
+
+    public string getNotaBase(int notaIndex)
+    {
+        return nombreNotas[notaIndex];
+    }
+
+    public List<UnidadPiano> getSeccionTemp()
+    {
+        return seccionTemp;
+    }
+
+    public void agregarSeccion(List<UnidadPiano> seccion)
+    {
+        funciones = funciones.Concat(seccion).ToList();
+    }
+
+    public void cleanFunciones()
+    {
+        funciones.Clear();
     }
 
     public void PlayPiano()

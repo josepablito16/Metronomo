@@ -113,6 +113,7 @@ public class GeneradorDeRitmo : MonoBehaviour
     public void generarRitmo(int seed = 0)
     {
         rellenoFormas.Clear();
+        miPiano.cleanFunciones();
         Counter = 0;
         if (seed != 0)
         {
@@ -134,7 +135,8 @@ public class GeneradorDeRitmo : MonoBehaviour
         int cantidadSubdivision = cantidadSubdivisionArray[Random.Range(0, cantidadSubdivisionArray.Length)];
 
 
-        pianoInfo = miPiano.GenerarRitmoPiano(cantidadSubdivision);
+        int notaBase = Random.Range(0, 11);
+
 
 
         NumberOfBeatsInBar = cantidadSubdivision;
@@ -149,15 +151,18 @@ public class GeneradorDeRitmo : MonoBehaviour
         GENERACION DE SECCIONES
         */
         Dictionary<string, List<int>> seccionesRelleno = new Dictionary<string, List<int>>();
+        Dictionary<string, List<UnidadPiano>> seccionesAcorde = new Dictionary<string, List<UnidadPiano>>();
+
         GeneradorFormas GF = new GeneradorFormas();
         List<string> secciones = GF.generarSecciones();
         Debug.Log("Secciones = " + string.Join(", ", secciones));
         Text info = GameObject.Find("Info").GetComponent<Text>();
-        info.text = string.Format("Metrica: {0}/4\nNota base: {1}\nSecciones: {2}", cantidadSubdivision, pianoInfo[1], string.Join(", ", secciones));
+        info.text = string.Format("Metrica: {0}/4\nNota base: {1}\nSecciones: {2}", cantidadSubdivision, miPiano.getNotaBase(notaBase), string.Join(", ", secciones));
 
-        /*
-            SECCIONES BATERIA
-        */
+        //--------------------------------
+        //pianoInfo = miPiano.GenerarRitmoPiano(cantidadSubdivision, notaBase);
+        //miPiano.agregarSeccion(miPiano.getSeccionTemp());
+        //--------------------------------
         foreach (string i in secciones)
         {
             try
@@ -166,8 +171,12 @@ public class GeneradorDeRitmo : MonoBehaviour
             }
             catch (System.Exception)
             {
-
+                // Bateria
                 seccionesRelleno[i] = crearClave(cantidadSubdivision, subdivisionBase);
+
+                // Piano
+                pianoInfo = miPiano.GenerarRitmoPiano(cantidadSubdivision, notaBase);
+                seccionesAcorde[i] = miPiano.getSeccionTemp();
             }
         }
 
@@ -175,6 +184,7 @@ public class GeneradorDeRitmo : MonoBehaviour
         foreach (string i in secciones)
         {
             rellenoFormas = rellenoFormas.Concat(seccionesRelleno[i]).ToList();
+            miPiano.agregarSeccion(seccionesAcorde[i]);
         }
 
 

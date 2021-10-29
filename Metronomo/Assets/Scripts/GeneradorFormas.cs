@@ -10,7 +10,7 @@ public class GeneradorFormas : MonoBehaviour
     {
         List<string> secciones = new List<string>();
         secciones = generarSecciones();
-        Debug.Log(string.Join(", ", secciones));
+        //Debug.Log(string.Join(", ", secciones));
 
     }
 

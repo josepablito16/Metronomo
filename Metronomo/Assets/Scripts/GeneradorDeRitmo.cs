@@ -155,7 +155,7 @@ public class GeneradorDeRitmo : MonoBehaviour
 
         GeneradorFormas GF = new GeneradorFormas();
         List<string> secciones = GF.generarSecciones();
-        Debug.Log("Secciones = " + string.Join(", ", secciones));
+        //Debug.Log("Secciones = " + string.Join(", ", secciones));
         Text info = GameObject.Find("Info").GetComponent<Text>();
         info.text = string.Format("Metrica: {0}/4\nNota base: {1}\nSecciones: {2}", cantidadSubdivision, miPiano.getNotaBase(notaBase), string.Join(", ", secciones));
 
@@ -307,7 +307,7 @@ public class GeneradorDeRitmo : MonoBehaviour
             }
         }
 
-        Debug.Log("Relleno final = " + string.Join(", ", rellenoFinal));
+        //Debug.Log("Relleno final = " + string.Join(", ", rellenoFinal));
 
 
         return rellenoFinal;

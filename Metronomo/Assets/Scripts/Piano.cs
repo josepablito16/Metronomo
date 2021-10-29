@@ -44,7 +44,7 @@ public class Piano : MonoBehaviour
         respuesta.Add(nombreNotas[notaIndex]);
         seccionTemp = calcularFuncionesTonales(resultado, cantSubdivisiones);
 
-        Debug.Log("respuesta = " + string.Join(", ", respuesta));
+        //Debug.Log("respuesta = " + string.Join(", ", respuesta));
 
         return respuesta;
     }

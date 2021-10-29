@@ -112,6 +112,7 @@ public class GeneradorDeRitmo : MonoBehaviour
 
     public void generarRitmo(int seed = 0)
     {
+        rellenoFormas.Clear();
         Counter = 0;
         if (seed != 0)
         {
@@ -147,14 +148,38 @@ public class GeneradorDeRitmo : MonoBehaviour
         /*
         GENERACION DE SECCIONES
         */
+        Dictionary<string, List<int>> seccionesRelleno = new Dictionary<string, List<int>>();
         GeneradorFormas GF = new GeneradorFormas();
         List<string> secciones = GF.generarSecciones();
         Debug.Log("Secciones = " + string.Join(", ", secciones));
         Text info = GameObject.Find("Info").GetComponent<Text>();
         info.text = string.Format("Metrica: {0}/4\nNota base: {1}\nSecciones: {2}", cantidadSubdivision, pianoInfo[1], string.Join(", ", secciones));
 
+        /*
+            SECCIONES BATERIA
+        */
+        foreach (string i in secciones)
+        {
+            try
+            {
+                seccionesRelleno[i] = seccionesRelleno[i];
+            }
+            catch (System.Exception)
+            {
 
-        rellenoFormas = crearClave(cantidadSubdivision, subdivisionBase);
+                seccionesRelleno[i] = crearClave(cantidadSubdivision, subdivisionBase);
+            }
+        }
+
+
+        foreach (string i in secciones)
+        {
+            rellenoFormas = rellenoFormas.Concat(seccionesRelleno[i]).ToList();
+        }
+
+
+
+        //rellenoFormas = crearClave(cantidadSubdivision, subdivisionBase);
         rellenoDim = rellenoFormas.Count;
 
     }

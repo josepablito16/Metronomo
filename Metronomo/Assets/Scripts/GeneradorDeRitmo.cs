@@ -143,6 +143,17 @@ public class GeneradorDeRitmo : MonoBehaviour
         //Debug.Log("cantidad de subdivisiones " +cantidadSubdivision);
         //Debug.Log("subdivision base " +subdivisionBase);
 
+
+        /*
+        GENERACION DE SECCIONES
+        */
+        GeneradorFormas GF = new GeneradorFormas();
+        List<string> secciones = GF.generarSecciones();
+        Debug.Log("Secciones = " + string.Join(", ", secciones));
+        Text info = GameObject.Find("Info").GetComponent<Text>();
+        info.text = string.Format("Metrica: {0}/4\nNota base: {1}\nSecciones: {2}", cantidadSubdivision, pianoInfo[1], string.Join(", ", secciones));
+
+
         rellenoFormas = crearClave(cantidadSubdivision, subdivisionBase);
         rellenoDim = rellenoFormas.Count;
 
@@ -249,8 +260,7 @@ public class GeneradorDeRitmo : MonoBehaviour
 
         //Debug.Log("Relleno final = "+string.Join(", ", rellenoFinal));
 
-        Text info = GameObject.Find("Info").GetComponent<Text>();
-        info.text = string.Format("Metrica: {0}/4\nNota base: {1}", cantidadSubdivision, pianoInfo[1]);
+
         return rellenoFinal;
 
     }

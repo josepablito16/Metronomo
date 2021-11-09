@@ -84,6 +84,7 @@ public class Piano : MonoBehaviour
 
             a.playAcorde(funciones[tiempo % funciones.Count].acorde);
         }
+        a.playMelodía(funciones[tiempo % funciones.Count].acorde);
 
         tiempo += 1;
     }

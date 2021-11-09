@@ -177,6 +177,8 @@ public class GeneradorDeRitmo : MonoBehaviour
                 // Piano
                 pianoInfo = miPiano.GenerarRitmoPiano(cantidadSubdivision, notaBase);
                 seccionesAcorde[i] = miPiano.getSeccionTemp();
+                Debug.Log(i);
+                Debug.Log(seccionesAcorde[i].Count);
             }
         }
 

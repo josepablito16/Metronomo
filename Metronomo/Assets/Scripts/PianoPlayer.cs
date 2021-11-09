@@ -5,6 +5,7 @@ using UnityEngine;
 public class PianoPlayer : MonoBehaviour
 {
     public List<AudioSource> samplesBase = new List<AudioSource>();
+    public AudioSource fluteBase = new AudioSource();
 
 
     float getPitch(int semitonos)
@@ -17,6 +18,7 @@ public class PianoPlayer : MonoBehaviour
         samplesBase.Add(GameObject.Find("SampleBase1").GetComponent<AudioSource>());
         samplesBase.Add(GameObject.Find("SampleBase2").GetComponent<AudioSource>());
         samplesBase.Add(GameObject.Find("SampleBase3").GetComponent<AudioSource>());
+        fluteBase = GameObject.Find("FluteBase").GetComponent<AudioSource>();
 
     }
 
@@ -39,6 +41,16 @@ public class PianoPlayer : MonoBehaviour
 
         samplesBase[2].pitch = getPitch(semitonosAcorde[2]);
         samplesBase[2].Play();
+
+    }
+
+    public void playMelodía(List<int> semitonosAcorde)
+    {
+
+        int index = Random.Range(0, semitonosAcorde.Count);
+        fluteBase.pitch = getPitch(semitonosAcorde[index]);
+        fluteBase.Play();
+
 
     }
 

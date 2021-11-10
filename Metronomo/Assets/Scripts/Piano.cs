@@ -8,11 +8,13 @@ public class Piano : MonoBehaviour
 {
     int notaIndex;
     List<UnidadPiano> funciones = new List<UnidadPiano>();
+    List<int> melodia = new List<int>();
     List<UnidadPiano> seccionTemp = new List<UnidadPiano>();
     int tiempo = 0;
 
     List<string> nombreNotas = new List<string> {"Do", "DO#", "RE", "RE#", "MI",
                 "FA", "FA#", "SOL", "SOL#", "LA", "LA#", "SI"};
+
     public List<string> GenerarRitmoPiano(int cantSubdivisiones, int notaBase)
     {
         tiempo = 0;
@@ -49,6 +51,39 @@ public class Piano : MonoBehaviour
         return respuesta;
     }
 
+    public List<int> GenerarMelodiaPiano(int cantSubdivisiones,List<UnidadPiano> acordes)
+    {
+        List<int> notas = new List<int>();
+
+        bool esLarga = true;
+
+        int contador = 0;
+
+        while (contador < acordes.Count)
+        {
+            if (esLarga)
+            {
+                esLarga = false;
+                int acordeLargo = acordes[contador].acorde[Random.Range(0, 3)];
+                for (int i = 0; i < cantSubdivisiones; i++)
+                {
+                    notas.Add(acordeLargo);
+                }
+                contador += cantSubdivisiones;
+            }
+
+            for (int i = 0; i < cantSubdivisiones; i++)
+            {
+                notas.Add(acordes[contador].acorde[Random.Range(0, 3)]);
+            }
+            contador += cantSubdivisiones;
+            esLarga = true; 
+
+        }
+
+        return notas;
+    }
+
     public string getNotaBase(int notaIndex)
     {
         return nombreNotas[notaIndex];
@@ -64,9 +99,15 @@ public class Piano : MonoBehaviour
         funciones = funciones.Concat(seccion).ToList();
     }
 
+    public void agregarSeccionMelodia(List<int> seccion)
+    {
+        melodia = melodia.Concat(seccion).ToList();
+    }
+
     public void cleanFunciones()
     {
         funciones.Clear();
+        melodia.Clear();
     }
 
     public void PlayPiano()
@@ -84,7 +125,7 @@ public class Piano : MonoBehaviour
 
             a.playAcorde(funciones[tiempo % funciones.Count].acorde);
         }
-        a.playMelodía(funciones[tiempo % funciones.Count].acorde);
+        a.playMelodía(melodia[tiempo % funciones.Count]);
 
         tiempo += 1;
     }

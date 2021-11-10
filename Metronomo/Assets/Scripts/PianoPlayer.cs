@@ -44,12 +44,16 @@ public class PianoPlayer : MonoBehaviour
 
     }
 
-    public void playMelodía(List<int> semitonosAcorde)
+    public void playMelodía(int nota)
     {
 
-        int index = Random.Range(0, semitonosAcorde.Count);
-        fluteBase.pitch = getPitch(semitonosAcorde[index]);
-        fluteBase.Play();
+
+        float pitchTemp = getPitch(nota);
+        if (pitchTemp != fluteBase.pitch)
+        {
+            fluteBase.pitch = pitchTemp;
+            fluteBase.Play();
+        }
 
 
     }

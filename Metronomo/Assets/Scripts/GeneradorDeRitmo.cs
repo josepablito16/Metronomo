@@ -152,6 +152,7 @@ public class GeneradorDeRitmo : MonoBehaviour
         */
         Dictionary<string, List<int>> seccionesRelleno = new Dictionary<string, List<int>>();
         Dictionary<string, List<UnidadPiano>> seccionesAcorde = new Dictionary<string, List<UnidadPiano>>();
+        Dictionary<string, List<int>> seccionesMelodia = new Dictionary<string, List<int>>();
 
         GeneradorFormas GF = new GeneradorFormas();
         List<string> secciones = GF.generarSecciones();
@@ -177,6 +178,7 @@ public class GeneradorDeRitmo : MonoBehaviour
                 // Piano
                 pianoInfo = miPiano.GenerarRitmoPiano(cantidadSubdivision, notaBase);
                 seccionesAcorde[i] = miPiano.getSeccionTemp();
+                seccionesMelodia[i] = miPiano.GenerarMelodiaPiano(cantidadSubdivision,seccionesAcorde[i]);
                 Debug.Log(i);
                 Debug.Log(seccionesAcorde[i].Count);
             }
@@ -187,6 +189,7 @@ public class GeneradorDeRitmo : MonoBehaviour
         {
             rellenoFormas = rellenoFormas.Concat(seccionesRelleno[i]).ToList();
             miPiano.agregarSeccion(seccionesAcorde[i]);
+            miPiano.agregarSeccionMelodia(seccionesMelodia[i]);
         }
 
 

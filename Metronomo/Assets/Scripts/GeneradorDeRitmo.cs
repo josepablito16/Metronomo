@@ -68,7 +68,6 @@ public class GeneradorDeRitmo : MonoBehaviour
 
             // Subintervalo
             int HitHatIndex = Random.Range(0, HitHat.Length);
-            HitHat[HitHatIndex].volume = 1;
             HitHat[HitHatIndex].Play();
 
             miPiano.PlayPiano();
@@ -178,7 +177,7 @@ public class GeneradorDeRitmo : MonoBehaviour
                 // Piano
                 pianoInfo = miPiano.GenerarRitmoPiano(cantidadSubdivision, notaBase);
                 seccionesAcorde[i] = miPiano.getSeccionTemp();
-                seccionesMelodia[i] = miPiano.GenerarMelodiaPiano(cantidadSubdivision,seccionesAcorde[i]);
+                seccionesMelodia[i] = miPiano.GenerarMelodiaPiano(cantidadSubdivision, seccionesAcorde[i]);
                 Debug.Log(i);
                 Debug.Log(seccionesAcorde[i].Count);
             }

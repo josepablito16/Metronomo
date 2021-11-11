@@ -47,7 +47,8 @@ public class PianoPlayer : MonoBehaviour
     public void playMelodía(int nota)
     {
 
-
+        if (nota == -1)
+            return;
         float pitchTemp = getPitch(nota);
         if (pitchTemp != fluteBase.pitch)
         {

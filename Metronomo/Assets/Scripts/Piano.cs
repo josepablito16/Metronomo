@@ -51,7 +51,7 @@ public class Piano : MonoBehaviour
         return respuesta;
     }
 
-    public List<int> GenerarMelodiaPiano(int cantSubdivisiones,List<UnidadPiano> acordes)
+    public List<int> GenerarMelodiaPiano(int cantSubdivisiones, List<UnidadPiano> acordes)
     {
         List<int> notas = new List<int>();
 
@@ -74,10 +74,17 @@ public class Piano : MonoBehaviour
 
             for (int i = 0; i < cantSubdivisiones; i++)
             {
-                notas.Add(acordes[contador].acorde[Random.Range(0, 3)]);
+                if (Random.Range(0, 3) == 0)
+                {
+                    notas.Add(-1);
+                }
+                else
+                {
+                    notas.Add(acordes[contador].acorde[Random.Range(0, 3)]);
+                }
             }
             contador += cantSubdivisiones;
-            esLarga = true; 
+            esLarga = true;
 
         }
 
@@ -180,7 +187,7 @@ public class Piano : MonoBehaviour
             4f * cantSubdivisiones,  //redonda
             2f * cantSubdivisiones,   //blanca
             1f * cantSubdivisiones,   //negra
-            0.5f * cantSubdivisiones,   //corchea
+            //0.5f * cantSubdivisiones,   //corchea
             //0.25f * cantSubdivisiones    //semicorchea
         };
 
